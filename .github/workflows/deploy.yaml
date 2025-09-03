@@ -1,0 +1,56 @@
+name: CI/CD to GKE with WIF
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: 'read'
+  id-token: 'write'
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          workload_identity_provider: 'projects/937980401410/locations/global/workloadIdentityPools/pool-gke/providers/gke-provider'
+          service_account: 'gke-test-sai@gcp-5ann01-sbx-devopspoc.iam.gserviceaccount.com'
+          create_credentials_file: true
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2'
+        with:
+          install_components: 'gke-gcloud-auth-plugin'
+
+      - name: Build Docker image
+        run: |
+          docker build -t us-central1-docker.pkg.dev/gcp-5ann01-sbx-devopspoc/kube-repo/hello-app:latest .
+
+      - name: Authenticate Docker to Artifact Registry
+        run: |
+          gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
+
+      - name: Push Docker image
+        run: |
+          docker push us-central1-docker.pkg.dev/gcp-5ann01-sbx-devopspoc/kube-repo/hello-app:latest
+
+      - name: Deploy to GKE
+        run: |
+          gcloud container clusters get-credentials my-gke --region us-central1
+
+          # If deployment doesn't exist, create it
+          if ! kubectl get deployment hello-app >/dev/null 2>&1; then
+            kubectl apply -f deployment.yaml
+          fi
+
+          # Update image
+          kubectl set image deployment/hello-app hello-app=us-central1-docker.pkg.dev/gcp-5ann01-sbx-devopspoc/kube-repo/hello-app:latest
+
+          # Wait for rollout
+          kubectl rollout status deployment/hello-app
