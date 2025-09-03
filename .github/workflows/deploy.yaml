@@ -19,7 +19,7 @@ jobs:
         name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v2'
         with:
-          workload_identity_provider: 'projects/937980401410/locations/global/workloadIdentityPools/pool-gke/providers/gke-provider'
+          workload_identity_provider: 'projects/937980401410/locations/global/workloadIdentityPools/pool-gke/providers/gke-provider1'
           service_account: 'gke-test-sai@gcp-5ann01-sbx-devopspoc.iam.gserviceaccount.com'
           create_credentials_file: true
 
