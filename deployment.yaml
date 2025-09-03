@@ -33,3 +33,10 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 8080
+
+      containers:
+  - name: hello-app
+    image: us-central1-docker.pkg.dev/gcp-5ann01-sbx-devopspoc/kube-repo/hello-app:latest
+    imagePullPolicy: Always
+    ports:
+      - containerPort: 8080
