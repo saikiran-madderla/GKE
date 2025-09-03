@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: hello-app
-          image: us-central1-docker.pkg.dev/gcp-5ann01-sbx-devopspoc/kube-repo/hello-app:latest
+          image: us-central1-docker.pkg.dev/gcp-5ann01-sbx-devopspoc/kube-repo/hello-app@sha256:e2ee6d72f1303b52b85f0e73e4abc6d10827599b9f44a860175d31aad10c6035
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
