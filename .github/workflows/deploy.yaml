@@ -46,7 +46,7 @@ jobs:
 
           # If deployment doesn't exist, create it
           if ! kubectl get deployment hello-app >/dev/null 2>&1; then
-          kubectl apply -f deployment.yaml
+            kubectl apply -f deployment.yaml
           fi
 
           # Update image
@@ -54,10 +54,10 @@ jobs:
 
           # Wait for rollout, print debug info if it fails
           if ! kubectl rollout status deployment/hello-app; then
-          echo "Rollout failed. Describing deployment and pods for debugging:"
-          kubectl describe deployment hello-app
-          kubectl get pods -l app=hello-app
-          kubectl describe pods -l app=hello-app
-          kubectl get events --sort-by=.metadata.creationTimestamp
-          exit 1
+            echo "Rollout failed. Describing deployment and pods for debugging:"
+            kubectl describe deployment hello-app
+            kubectl get pods -l app=hello-app
+            kubectl describe pods -l app=hello-app
+            kubectl get events --sort-by=.metadata.creationTimestamp
+            exit 1
           fi
