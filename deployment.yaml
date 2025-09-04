@@ -1,34 +1,60 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+
+kind: Service
+
 metadata:
-  name: hello-app
+
+  name: nginx-project
+
 spec:
-  replicas: 1
+
+  type: LoadBalancer
+
+  ports:
+
+    - port: 80
+
   selector:
-    matchLabels:
-      app: hello-app
-  template:
-    metadata:
-      labels:
-        app: hello-app
-    spec:
-      containers:
-        - name: hello-app
-          image: nginx
-          imagePullPolicy: Always
-          ports:
-            - containerPort: 80
+
+    app: nginx-project
 
 ---
-apiVersion: v1
-kind: Service
+
+apiVersion: apps/v1
+
+kind: Deployment
+
 metadata:
-  name: hello-service
+
+  name: nginx-project
+
 spec:
-  type: LoadBalancer
+
+  replicas: 1
+
   selector:
-    app: hello-app
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 8080
+
+    matchLabels:
+
+      app: nginx-project
+
+  template:
+
+    metadata:
+
+      labels:
+
+        app: nginx-project
+
+    spec:
+
+      containers:
+
+        - name: nginx
+
+          image: nginx:1.17.3
+
+          ports:
+
+            - containerPort: 80
+ 
